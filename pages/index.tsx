@@ -24,6 +24,11 @@ export default function Home() {
               <UILink href={"#"}>zustand</UILink>
             </Link>
           </li>
+          <li>
+            <Link href={"/recoil"}>
+              <UILink href={"#"}>recoil</UILink>
+            </Link>
+          </li>
         </ul>
       </main>
     </div>
