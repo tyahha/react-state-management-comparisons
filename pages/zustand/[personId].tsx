@@ -4,14 +4,15 @@ import { PageFrame } from "../../components/page-frame"
 import { Backdrop } from "@material-ui/core"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import { PersonName } from "../../components/person-name"
-import { usePersonStore } from "./index"
+import { useFetchPersonsIfNull, usePersonStore } from "./index"
 import { Address, Person } from "../../data/persons"
 import { PersonAddress } from "../../components/person-address"
 import shallow from "zustand/shallow"
 
 export default function PersonDetail() {
+  useFetchPersonsIfNull()
   const router = useRouter()
-  const { selectingPersonId, set } = usePersonStore()
+  const { persons, selectingPersonId, set } = usePersonStore()
   useEffect(() => {
     // 1回目のレンダリング時はパスパラメータが取得できないので対策
     if (router.asPath !== router.route) {
@@ -30,7 +31,7 @@ export default function PersonDetail() {
         s.selectingPersonId = undefined
       })
     }
-  }, [])
+  }, [persons])
   return !selectingPersonId ? (
     <Backdrop open={true}>
       <CircularProgress color="inherit" />

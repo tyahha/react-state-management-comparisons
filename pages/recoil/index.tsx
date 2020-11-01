@@ -1,7 +1,7 @@
 import { getPersons, Person, persons } from "../../data/persons"
 import { Persons } from "../../components/Persons"
 import { useEffect } from "react"
-import { atom, useRecoilState } from "recoil"
+import { atom, useRecoilState, useRecoilValue } from "recoil"
 
 export interface PersonState extends Record<string | number | symbol, unknown> {
   persons: Record<string, Person>
@@ -15,18 +15,23 @@ export const personsState = atom<PersonState>({
   },
 })
 
-export default function Recoil() {
+export const useFetchPersonsIfNull = () => {
   const [state, setState] = useRecoilState(personsState)
   useEffect(() => {
-    getPersons().then((persons) => {
-      const ps: Record<string, Person> = {}
-      persons.forEach((p) => {
-        ps[p.id] = p
+    if (Object.keys(state.persons).length <= 0) {
+      getPersons().then((persons) => {
+        const ps: Record<string, Person> = {}
+        persons.forEach((p) => {
+          ps[p.id] = p
+        })
+        setState({ ...state, ...{ persons: ps } })
       })
-      setState({ ...state, ...{ persons: ps } })
-    })
+    }
   }, [])
-  return (
-    <Persons persons={Object.values(state.persons)} linkPrefix={"/recoil"} />
-  )
+}
+
+export default function Recoil() {
+  useFetchPersonsIfNull()
+  const { persons } = useRecoilValue(personsState)
+  return <Persons persons={Object.values(persons)} linkPrefix={"/recoil"} />
 }

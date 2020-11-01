@@ -4,7 +4,7 @@ import { PageFrame } from "../../components/page-frame"
 import { Backdrop } from "@material-ui/core"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import { PersonName } from "../../components/person-name"
-import { personsState } from "./index"
+import { personsState, useFetchPersonsIfNull } from "./index"
 import { Address, Person } from "../../data/persons"
 import { PersonAddress } from "../../components/person-address"
 
@@ -85,6 +85,7 @@ const selectedPersonAddressState = selector<Address | undefined>({
 })
 
 export default function PersonDetail() {
+  useFetchPersonsIfNull()
   const router = useRouter()
   const [state, setPersonsState] = useRecoilState(personsState)
   useEffect(() => {
@@ -109,7 +110,8 @@ export default function PersonDetail() {
         })
       )
     }
-  }, [])
+  }, [state.persons])
+
   return !state.selectingPersonId ? (
     <Backdrop open={true}>
       <CircularProgress color="inherit" />

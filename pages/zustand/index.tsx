@@ -27,8 +27,17 @@ export const usePersonStore = create<
   set: (fn) => set(produce(fn)),
 }))
 
-export default function Zustand() {
+export const useFetchPersonsIfNull = () => {
   const { persons, fetchPerson } = usePersonStore()
-  useEffect(() => fetchPerson(), [])
+  useEffect(() => {
+    if (Object.keys(persons).length <= 0) {
+      fetchPerson()
+    }
+  }, [])
+}
+
+export default function Zustand() {
+  const { persons } = usePersonStore()
+  useFetchPersonsIfNull()
   return <Persons persons={Object.values(persons)} linkPrefix={"/zustand"} />
 }
