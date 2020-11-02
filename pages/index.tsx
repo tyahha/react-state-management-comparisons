@@ -15,6 +15,11 @@ export default function Home() {
         <h1 className={styles.title}>Portal</h1>
         <ul>
           <li>
+            <Link href={"/all-in-one-page"}>
+              <UILink href={"#"}>all in one page</UILink>
+            </Link>
+          </li>
+          <li>
             <Link href={"/context"}>
               <UILink href={"#"}>react context</UILink>
             </Link>
