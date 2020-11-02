@@ -84,35 +84,45 @@ const selectedPersonAddressState = selector<Address | undefined>({
   },
 })
 
+const selectedPersonIdState = selector<string | undefined>({
+  key: "selected-person-id",
+  get: ({ get }) => {
+    const state = get(personsState)
+    return state.selectingPersonId
+  },
+  set: ({ get, set }, newValue) => {
+    set(
+      personsState,
+      produce(get(personsState), (d) => {
+        d.selectingPersonId = newValue as string
+      })
+    )
+  },
+})
+
 export default function PersonDetail() {
   useFetchPersonsIfNull()
   const router = useRouter()
-  const [state, setPersonsState] = useRecoilState(personsState)
+  const [selectedPersonId, setSelectedPersonId] = useRecoilState(
+    selectedPersonIdState
+  )
   useEffect(() => {
     // 1回目のレンダリング時はパスパラメータが取得できないので対策
     if (router.asPath !== router.route) {
       const personId = router.query["personId"]
       if (typeof personId === "string") {
-        setPersonsState((s) =>
-          produce(s, (d) => {
-            d.selectingPersonId = personId
-          })
-        )
+        setSelectedPersonId(personId)
       } else {
         router.replace("/")
       }
     }
 
     return () => {
-      setPersonsState((s) =>
-        produce(s, (d) => {
-          d.selectingPersonId = undefined
-        })
-      )
+      setSelectedPersonId(undefined)
     }
-  }, [state.persons])
+  }, [])
 
-  return !state.selectingPersonId ? (
+  return !selectedPersonId ? (
     <Backdrop open={true}>
       <CircularProgress color="inherit" />
     </Backdrop>
